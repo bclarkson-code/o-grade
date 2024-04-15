@@ -1,0 +1,23 @@
+{% for row in data[:-1] %}
+<tr>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ row.name }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ row.crag}}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ row.country }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ row.date }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-bold neon-text">{{ row.ograde }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ row.sportgrade }}</td>
+</tr>
+{% endfor %}
+<tr
+    hx-get={{ url }}
+    hx-swap="beforeend"
+    hx-trigger="intersect once"
+    hx-target="closest tbody"
+    >
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ data[-1].name }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ data[-1].crag}}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ data[-1].country }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ data[-1].date }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-bold neon-text">{{ data[-1].ograde }}</td>
+    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">{{ data[-1].sportgrade }}</td>
+</tr>
