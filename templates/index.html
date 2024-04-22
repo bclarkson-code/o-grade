@@ -1,108 +1,173 @@
 <!DOCTYPE html>
 <html lang="en" class="dark" x-data="{ darkMode: true }">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>O-grader</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://unpkg.com/htmx.org@1.8.4"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-        <style>
-            .neon-text {
-                background: linear-gradient(to right, #02ff00, #02ff00, #ff00ed, #ff00ed);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-        </style>
-    </head>
-    <body class="bg-gray-900 text-white" :class="{ 'bg-gray-100 text-black': !darkMode }">
-        <div class="bg-gray-800 py-20" :class="{ 'bg-white': !darkMode }">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 class="text-6xl font-bold text-center mb-4 py-2 neon-text">O-grader</h1>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O-grader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+    <style>
+        .neon-text {
+            background: linear-gradient(to right, #02ff00, #02ff00, #ff00ed, #ff00ed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white" :class="{ 'bg-gray-100 text-black': !darkMode }">
+    <div class="bg-gray-800" :class="{ 'bg-white': !darkMode }">
+        <div class="max-w-7xl mx-auto pt-4 px-4 sm:px-6 lg:px-8">
+            <a href="https://github.com/bclarkson-code/o-grade" class="float-right">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 16 16" width="20" aria-hidden="true">
+                    <path fill="currentColor"
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                </svg>
+            </a>
+            <h1 class="text-6xl font-bold text-center mb-4 pb-2 neon-text">O-grader</h1>
+        </div>
+        <div class="flex justify-center mb-8">
+            <div class="text-center mx-4">
+                <span class="text-xl font-semibold">Simple</span>
             </div>
-            <div class="flex justify-center mb-8">
-                <div class="text-center mx-4">
-                    <span class="text-xl font-semibold">Simple</span>
-                </div>
-                <div class="text-center mx-4">
-                    <span class="text-xl font-semibold">Accurate</span>
-                </div>
-                <div class="text-center mx-4">
-                    <span class="text-xl font-semibold">Unambiguous</span>
+            <div class="text-center mx-4">
+                <span class="text-xl font-semibold">Accurate</span>
+            </div>
+            <div class="text-center mx-4">
+                <span class="text-xl font-semibold">Unambiguous</span>
+            </div>
+        </div>
+        <div class="text-center justify-center">
+            <p> Fed up with arguing whether your project is a 9c or a 6a? <br>
+            </p>
+            <p class="py-2">O-grades are the <strong class="text-fuchsia-500">only 100% accurate grading
+                    method</strong>. </p>
+
+            <!-- Modal Background -->
+            <div id="modalBackground" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden"></div>
+
+            <!-- Modal Content -->
+            <div id="modalContent"
+                class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 p-8 rounded-lg shadow-lg hidden max-w-lg w-full">
+                <div hx-trigger="load" hx-target="this" hx-get="/api/v0/routeForm">
+                    <!-- Form Content -->
                 </div>
             </div>
-            <div class="text-center justify-center">
-                <p> Fed up with arguing whether your project is a 9c or a 6a? <br>
-                </p>
-                <p class="py-2">O-grades are the <strong class="text-fuchsia-500">last grading system you'll ever need</strong>. </p>
-                <div class="max-w-md mx-auto bg-gray-700 p-8 rounded-md shadow-md mt-5">
-                    <h2 class="text-lg font-semibold mb-4">Has Adam Ondra climbed your route?</h2>
-                    <div class="flex justify-center mb-4">
-                        <button id="noBtn" class="px-4 py-2 rounded-md bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-gray-500">No</button>
-                        <button id="yesBtn" class="px-4 py-2 rounded-md bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-gray-500">Yes</button>
-                    </div>
-                    <div id="sessionInput" class="hidden mb-4">
-                        <label for="sessionCount" class="block text-sm font-medium mb-1">How many sessions did it take him?</label>
-                        <input id="sessionCount" type="number" min="1" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-white" placeholder="Enter number of sessions">
-                    </div>
-                    <div id="result" class="hidden">
-                        <p class="text-gray-400 text-5xl ">Grade: <a id="resultText" class="neon-text font-bold"></a>
-                        </p>
-                    </div>
+
+
+            <div class="max-w-md mx-auto bg-gray-700 p-8 rounded-md shadow-md mt-5">
+                <h2 class="text-lg font-semibold mb-4">Has Adam Ondra climbed your route?</h2>
+                <div class="flex justify-center mb-4">
+                    <button id="noBtn"
+                        class="px-4 py-2 rounded-md bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-gray-500">No</button>
+                    <button id="yesBtn"
+                        class="px-4 py-2 rounded-md bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-gray-500">Yes</button>
                 </div>
+                <div id="sessionInput" class="hidden mb-4">
+                    <label for="sessionCount" class="block text-sm font-medium mb-1">How many sessions did it take
+                        him?</label>
+                    <input id="sessionCount" type="number" min="1"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-white"
+                        maxlength="4" placeholder="Enter number of sessions">
+                </div>
+                <div id="result" class="hidden">
+                    <p class="text-gray-400 text-5xl ">Grade: <a id="resultText" class="neon-text font-bold"></a>
+                    </p>
+                </div>
+            </div>
+            <!-- Make the O-grade calculator work -->
+            <script>
+                const noBtn = document.getElementById('noBtn');
+                const yesBtn = document.getElementById('yesBtn');
+                const sessionInput = document.getElementById('sessionInput');
+                const sessionCount = document.getElementById('sessionCount');
+                const result = document.getElementById('result');
+                const resultText = document.getElementById('resultText');
+                noBtn.addEventListener('click', () => {
+                    sessionInput.classList.add('hidden');
+                    result.classList.remove('hidden');
+                    resultText.textContent = `O-?`;
+                    yesBtn.classList.remove('bg-blue-500', 'text-white');
+                    yesBtn.classList.add('bg-gray-300', 'text-gray-700');
+                    noBtn.classList.remove('bg-gray-300', 'text-gray-700');
+                    noBtn.classList.add('bg-red-500', 'text-white');
+                });
+                yesBtn.addEventListener('click', () => {
+                    sessionInput.classList.remove('hidden');
+                    result.classList.add('hidden');
+                    yesBtn.classList.remove('bg-gray-300', 'text-gray-700');
+                    yesBtn.classList.add('bg-blue-500', 'text-white');
+                    noBtn.classList.remove('bg-red-500', 'text-white');
+                    noBtn.classList.add('bg-gray-300', 'text-gray-700');
+                });
+                sessionCount.addEventListener('input', () => {
+                    const count = parseInt(sessionCount.value);
+                    if (count >= 0) {
+                        resultText.textContent = `O-${count}`;
+                        result.classList.remove('hidden');
+                    } else {
+                        result.classList.add('hidden');
+                    }
+                });
+            </script>
+            <div
+                class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 lg:w-2/3 md:w-full sm:w-full mx-auto mt-10">
+                <h1 class="text-5xl font-semibold py-4">O-Graded Routes</h1>
+                <p class='pb-4'>Want to know the O-grades for other routes? Here is a list of every ascent on <a
+                        href="http://8a.nu">8a.nu</a> that has an O-grade. </br> Think we are missing a route? <button
+                        class="hover:text-gray-300 underline" id="openModalButton">Let us know!</button></p>
+
+                <table
+                    class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:divide-gray-700 dark:bg-gray-900">
+                    <thead class="ltr:text-left rtl:text-right">
+                        <tr>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Name</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Crag</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Country
+                            </th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Date</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">O-Grade
+                            </th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Sport
+                                Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody hx-get="/api/v0/ascents?page=0&rows=10&sort_by=date" hx-trigger="load" hx-target="this">
+                        <!-- Table data will be loaded here -->
+                    </tbody>
+                </table>
+                <!-- JavaScript to handle modal toggle -->
                 <script>
-                    const noBtn = document.getElementById('noBtn');
-                    const yesBtn = document.getElementById('yesBtn');
-                    const sessionInput = document.getElementById('sessionInput');
-                    const sessionCount = document.getElementById('sessionCount');
-                    const result = document.getElementById('result');
-                    const resultText = document.getElementById('resultText');
-                    noBtn.addEventListener('click', () => {
-                        sessionInput.classList.add('hidden');
-                        result.classList.add('hidden');
-                        yesBtn.classList.remove('bg-blue-500', 'text-white');
-                        yesBtn.classList.add('bg-gray-300', 'text-gray-700');
-                        noBtn.classList.remove('bg-gray-300', 'text-gray-700');
-                        noBtn.classList.add('bg-red-500', 'text-white');
-                    });
-                    yesBtn.addEventListener('click', () => {
-                        sessionInput.classList.remove('hidden');
-                        result.classList.add('hidden');
-                        yesBtn.classList.remove('bg-gray-300', 'text-gray-700');
-                        yesBtn.classList.add('bg-blue-500', 'text-white');
-                        noBtn.classList.remove('bg-red-500', 'text-white');
-                        noBtn.classList.add('bg-gray-300', 'text-gray-700');
-                    });
-                    sessionCount.addEventListener('input', () => {
-                        const count = parseInt(sessionCount.value);
-                        if (count > 0) {
-                            resultText.textContent = `O-${count}`;
-                            result.classList.remove('hidden');
-                        } else {
-                            result.classList.add('hidden');
-                        }
-                    });
+                    // Get modal elements
+                    const modalBackground = document.getElementById('modalBackground');
+                    const modalContent = document.getElementById('modalContent');
+                    const openModalButton = document.getElementById('openModalButton');
+
+                    // Function to open the modal
+                    function openModal() {
+                        modalBackground.classList.remove('hidden');
+                        modalContent.classList.remove('hidden');
+                    }
+
+                    // Function to close the modal
+                    function closeModal() {
+                        modalBackground.classList.add('hidden');
+                        modalContent.classList.add('hidden');
+                    }
+
+                    // Event listener for opening the modal
+                    openModalButton.addEventListener('click', openModal);
+
+                    // Event listeners to close modal
+                    modalBackground.addEventListener('click', closeModal);
                 </script>
-                <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 lg:w-2/3 md:w-100 sm:w-100 mx-auto mt-10">
-                    <h1 class="text-5xl font-semibold py-4">O-Graded Routes</h1>
-                    <p>Want to know the O-grades for other routes? Here is a list of every ascent on <a href="http://8a.nu">8a.nu</a> that has an O-grade. </p>
-                    <p class="pb-2">Any routes missing? Let <a href="mailto:bclarkson-code@proton.me" class="underline">me</a> or <a href="mailto:info@wideboyz.com" class="underline">The Wide Boyz</a> know and we'll add it to the database. </p>
-                    <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:divide-gray-700 dark:bg-gray-900">
-                        <thead class="ltr:text-left rtl:text-right">
-                            <tr>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Name</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Crag</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Country</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Date</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">O-Grade</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">Sport Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody hx-get="/api/v0/ascents?page=0&rows=10&sort_by=date" hx-trigger="load" hx-target="this">
-                            <!-- Table data will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
             </div>
-    </body>
+        </div>
+</body>
+
 </html>
