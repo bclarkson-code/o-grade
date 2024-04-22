@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  web:
+    image: ograde:0.0.2
+    ports:
+      - "80:80"
+
