@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.8.4"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
     <style>
         .neon-text {
             background: linear-gradient(to right, #02ff00, #02ff00, #ff00ed, #ff00ed);
@@ -43,8 +45,21 @@
         <div class="text-center justify-center">
             <p> Fed up with arguing whether your project is a 9c or a 6a? <br>
             </p>
-            <p class="py-2">O-grades are the <strong class="text-fuchsia-500">last grading system you'll ever
-                    need</strong>. </p>
+            <p class="py-2">O-grades are the <strong class="text-fuchsia-500">only 100% accurate grading
+                    method</strong>. </p>
+
+            <!-- Modal Background -->
+            <div id="modalBackground" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden"></div>
+
+            <!-- Modal Content -->
+            <div id="modalContent"
+                class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 p-8 rounded-lg shadow-lg hidden max-w-lg w-full">
+                <div hx-trigger="load" hx-target="this" hx-get="/api/v0/routeForm">
+                <!-- Form Content -->
+                </div>
+            </div>
+
+
             <div class="max-w-md mx-auto bg-gray-700 p-8 rounded-md shadow-md mt-5">
                 <h2 class="text-lg font-semibold mb-4">Has Adam Ondra climbed your route?</h2>
                 <div class="flex justify-center mb-4">
@@ -65,6 +80,7 @@
                     </p>
                 </div>
             </div>
+            <!-- Make the O-grade calculator work -->
             <script>
                 const noBtn = document.getElementById('noBtn');
                 const yesBtn = document.getElementById('yesBtn');
@@ -91,7 +107,7 @@
                 });
                 sessionCount.addEventListener('input', () => {
                     const count = parseInt(sessionCount.value);
-                    if (count > 0) {
+                    if (count >= 0) {
                         resultText.textContent = `O-${count}`;
                         result.classList.remove('hidden');
                     } else {
@@ -100,10 +116,12 @@
                 });
             </script>
             <div
-                class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 lg:w-2/3 md:w-100 sm:w-100 mx-auto mt-10">
+                class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 lg:w-2/3 md:w-full sm:w-full mx-auto mt-10">
                 <h1 class="text-5xl font-semibold py-4">O-Graded Routes</h1>
-                <p>Want to know the O-grades for other routes? Here is a list of every ascent on <a
-                        href="http://8a.nu">8a.nu</a> that has an O-grade. </p>
+                <p class='pb-4'>Want to know the O-grades for other routes? Here is a list of every ascent on <a
+                        href="http://8a.nu">8a.nu</a> that has an O-grade. </br> Think we are missing a route? <button
+                        class="hover:text-gray-300 underline" id="openModalButton">Let us know!</button></p>
+
                 <table
                     class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:divide-gray-700 dark:bg-gray-900">
                     <thead class="ltr:text-left rtl:text-right">
@@ -123,6 +141,31 @@
                         <!-- Table data will be loaded here -->
                     </tbody>
                 </table>
+                <!-- JavaScript to handle modal toggle -->
+                <script>
+                    // Get modal elements
+                    const modalBackground = document.getElementById('modalBackground');
+                    const modalContent = document.getElementById('modalContent');
+                    const openModalButton = document.getElementById('openModalButton');
+
+                    // Function to open the modal
+                    function openModal() {
+                        modalBackground.classList.remove('hidden');
+                        modalContent.classList.remove('hidden');
+                    }
+
+                    // Function to close the modal
+                    function closeModal() {
+                        modalBackground.classList.add('hidden');
+                        modalContent.classList.add('hidden');
+                    }
+
+                    // Event listener for opening the modal
+                    openModalButton.addEventListener('click', openModal);
+
+                    // Event listeners to close modal
+                    modalBackground.addEventListener('click', closeModal);
+                </script>
             </div>
         </div>
 </body>
