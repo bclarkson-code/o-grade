@@ -55,7 +55,7 @@
             <div id="modalContent"
                 class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 p-8 rounded-lg shadow-lg hidden max-w-lg w-full">
                 <div hx-trigger="load" hx-target="this" hx-get="/api/v0/routeForm">
-                <!-- Form Content -->
+                    <!-- Form Content -->
                 </div>
             </div>
 
@@ -73,7 +73,7 @@
                         him?</label>
                     <input id="sessionCount" type="number" min="1"
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-white"
-                        placeholder="Enter number of sessions">
+                        maxlength="4" placeholder="Enter number of sessions">
                 </div>
                 <div id="result" class="hidden">
                     <p class="text-gray-400 text-5xl ">Grade: <a id="resultText" class="neon-text font-bold"></a>
