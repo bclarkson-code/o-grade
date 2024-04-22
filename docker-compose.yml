@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   web:
-    image: ograde:0.0.2
+    image: ograde:0.0.4
     ports:
       - "80:80"
+    restart: always
 
